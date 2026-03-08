@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="flex h-screen">
+
+    {% include "partials/sidebar.html" %}
+
+    <div class="flex-1 flex flex-col">
+
+        {% include "partials/topbar.html" %}
+
+        <main class="p-6 overflow-y-auto">
+
+            {% include "partials/flash_messages.html" %}
+
+            {% block page_content %}
+            {% endblock %}
+
+        </main>
+
+    </div>
+
+</div>
+
+{% endblock %}
