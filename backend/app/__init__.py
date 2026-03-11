@@ -9,6 +9,7 @@ from app.core.extensions import db, migrate, login_manager
 from app.core.logging_config import configure_logging
 from app.core.middleware import register_middlewares
 
+
 CONFIG_MAP = {
     "development": DevelopmentConfig,
     "production": ProductionConfig,
@@ -35,31 +36,26 @@ def create_app():
     template_folder="../../frontend/src/templates",
 )
     app.config.from_object(config_class)
-
-    from flask import render_template                       #temporal
-
-
+    
     logger.info(f"Inicializando extensiones")
 
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
+    from app.models.user import User
+
     @login_manager.user_loader
     def load_user(user_id):
-        return None
-
+        return db.session.get(User, int(user_id))
 
     register_middlewares(app)
 
-     # RUTA TEMPORAL PARA VISUALIZAR UI
-    from flask import render_template
+    # Registrar blueprints
+    from app.blueprints.dashboard import dashboard_bp
+    from app.blueprints.dashboard import routes
 
-    @app.route("/")
-    def home():
-        return render_template("dashboard/index.html")
-
-
+    app.register_blueprint(dashboard_bp)
 
     from app import models
 

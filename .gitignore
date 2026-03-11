@@ -6,6 +6,8 @@ __pycache__/
 
 # Virtual environment
 venv/
+env/
+ENV/
 
 # Environment variables
 .env
@@ -13,6 +15,10 @@ venv/
 # Logs
 logs/
 *.log
+
+# Databases (dev)
+*.db
+*.sqlite3
 
 # OS
 .DS_Store
@@ -24,6 +30,10 @@ Thumbs.db
 
 # Pytest
 .pytest_cache/
+
+# Coverage
+htmlcov/
+.coverage
 
 # Build
 dist/
