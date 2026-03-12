@@ -52,10 +52,13 @@ def create_app():
     register_middlewares(app)
 
     # Registrar blueprints
+    from app.blueprints.auth import auth_bp
     from app.blueprints.dashboard import dashboard_bp
-    from app.blueprints.dashboard import routes
+    from app.blueprints.users import users_bp
 
+    app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
+    app.register_blueprint(users_bp)
 
     from app import models
 

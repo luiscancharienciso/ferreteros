@@ -1,10 +1,11 @@
+from flask_login import UserMixin
 from sqlalchemy import UniqueConstraint
 
 from app.core.extensions import db
 from app.models.mixins import TimestampMixin, TenantMixin
 
 
-class User(TenantMixin, TimestampMixin, db.Model):
+class User(UserMixin, TenantMixin, TimestampMixin, db.Model):
     """
     Representa un usuario del sistema.
     Ejemplo: administrador, cajero, supervisor.
@@ -51,5 +52,25 @@ class User(TenantMixin, TimestampMixin, db.Model):
         default=True
     )
 
+    # Relación al rol — permite acceder a current_user.role.permissions
+    role = db.relationship("Role", foreign_keys=[role_id], lazy="joined")
+
     def __repr__(self):
         return f"<User {self.email}>"
+
+    def has_permission(self, permission: str) -> bool:
+        """
+        Verifica si el usuario tiene un permiso específico.
+        Si el rol no tiene JSON de permisos, usa el mapa por nombre de rol como fallback.
+        """
+        if not self.role:
+            return False
+
+        permissions = self.role.permissions
+
+        # Fallback por nombre de rol si permissions es NULL en la DB
+        if not permissions:
+            from app.core.decorators import ROLE_PERMISSION_MAP
+            permissions = ROLE_PERMISSION_MAP.get(self.role.name.lower(), [])
+
+        return permission in permissions

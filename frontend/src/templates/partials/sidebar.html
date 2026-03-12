@@ -22,8 +22,10 @@
             Ventas
         </a>
 
-        <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-gray-800 transition">
-            Usuarios
+        <a href="{{ url_for('users.index') }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800 transition">
+            <i class="fa-solid fa-users"></i>
+            <span>Usuarios</span>
         </a>
 
     </nav>

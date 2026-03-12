@@ -1,0 +1,53 @@
+{% extends "layouts/app.html" %}
+
+{% block content %}
+
+<div class="min-h-screen flex items-center justify-center p-6">
+
+    <div class="w-full max-w-xl bg-white rounded-2xl shadow-sm p-6">
+
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">
+            Crear usuario
+        </h1>
+
+        <form method="POST" class="space-y-4">
+
+            {{ form.hidden_tag() }}
+
+            <div>
+                <label class="block text-sm font-medium">Nombre</label>
+                {{ form.name(class="w-full border border-gray-300 rounded-lg px-3 py-2") }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium">Email</label>
+                {{ form.email(class="w-full border border-gray-300 rounded-lg px-3 py-2") }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium">Contraseña</label>
+                {{ form.password(class="w-full border border-gray-300 rounded-lg px-3 py-2") }}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium">Rol</label>
+                {{ form.role_id(class="w-full border border-gray-300 rounded-lg px-3 py-2") }}
+            </div>
+
+            <div class="flex items-center gap-2">
+                {{ form.is_active() }}
+                <span class="text-sm">Usuario activo</span>
+            </div>
+
+            <button
+                class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                Crear usuario
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

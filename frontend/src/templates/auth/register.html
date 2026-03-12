@@ -1,0 +1,81 @@
+{% extends "layouts/auth.html" %}
+
+{% block auth_content %}
+
+<h2 class="text-2xl font-bold text-gray-900 mb-1 text-center">
+    Registrá tu ferretería
+</h2>
+<p class="text-sm text-gray-500 text-center mb-6">
+    Creá tu cuenta de administrador y empezá a usar el sistema.
+</p>
+
+<form method="POST" class="space-y-4">
+
+    {{ form.hidden_tag() }}
+
+    <div>
+        <label class="block text-sm font-medium text-gray-700">
+            Nombre de la ferretería
+        </label>
+        {{ form.tenant_name(class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none", placeholder="Ej: Ferretería El Clavo") }}
+        {% for error in form.tenant_name.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-700">
+            Tu nombre completo
+        </label>
+        {{ form.admin_name(class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none", placeholder="Ej: Juan Pérez") }}
+        {% for error in form.admin_name.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-700">
+            Email
+        </label>
+        {{ form.email(class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none", placeholder="admin@ferreteria.com") }}
+        {% for error in form.email.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-700">
+            Contraseña
+        </label>
+        {{ form.password(class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none") }}
+        {% for error in form.password.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium text-gray-700">
+            Confirmar contraseña
+        </label>
+        {{ form.confirm_password(class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none") }}
+        {% for error in form.confirm_password.errors %}
+        <p class="text-red-500 text-xs mt-1">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <button
+        type="submit"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition duration-200">
+        Registrar ferretería
+    </button>
+
+    <p class="text-sm text-center text-gray-500 mt-4">
+        ¿Ya tenés cuenta?
+        <a href="{{ url_for('auth.login') }}" class="text-indigo-600 hover:underline">
+            Iniciá sesión
+        </a>
+    </p>
+
+</form>
+
+{% endblock %}

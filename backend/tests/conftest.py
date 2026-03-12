@@ -2,8 +2,11 @@ import os
 import sys
 import pytest
 
-# Agregar backend al PYTHONPATH
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+# Forzar entorno testing ANTES de importar la app
+os.environ["FLASK_ENV"] = "testing"
+os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 
 from app import create_app
 from app.core.extensions import db
@@ -12,10 +15,10 @@ from app.core.extensions import db
 @pytest.fixture
 def app():
     app = create_app()
-
     app.config.update(
         TESTING=True,
-        SQLALCHEMY_DATABASE_URI="sqlite:///:memory:"
+        SQLALCHEMY_DATABASE_URI="sqlite:///:memory:",
+        WTF_CSRF_ENABLED=False,
     )
 
     with app.app_context():

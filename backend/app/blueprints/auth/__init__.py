@@ -1,8 +1,9 @@
 from flask import Blueprint
 
-dashboard_bp = Blueprint(
-    "dashboard",
+auth_bp = Blueprint(
+    "auth",
     __name__,
+    url_prefix="/auth"
 )
 
 from . import routes
