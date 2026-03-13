@@ -1,8 +1,10 @@
 {% extends "layouts/app.html" %}
 
-{% block content %}
+{% block page_title %}Editar usuario{% endblock %}
 
-<div class="p-6 max-w-xl mx-auto">
+{% block page_content %}
+
+<div class="max-w-xl mx-auto">
 
     <div class="bg-white rounded-2xl shadow-sm p-6">
 
@@ -15,48 +17,62 @@
             {{ form.hidden_tag() }}
 
             <div>
-                <label class="block text-sm font-medium">Nombre</label>
-                {{ form.name(class="w-full border border-gray-300 rounded-lg px-3 py-2") }}
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                {{ form.name(class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500") }}
                 {% for error in form.name.errors %}
                 <p class="text-xs text-red-600 mt-1">{{ error }}</p>
                 {% endfor %}
             </div>
 
             <div>
-                <label class="block text-sm font-medium">Email</label>
-                {{ form.email(class="w-full border border-gray-300 rounded-lg px-3 py-2") }}
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                {{ form.email(class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500") }}
                 {% for error in form.email.errors %}
                 <p class="text-xs text-red-600 mt-1">{{ error }}</p>
                 {% endfor %}
             </div>
 
             <div>
-                <label class="block text-sm font-medium">
-                    Nueva contraseña (opcional)
+                <label class="block text-sm font-medium text-gray-700 mb-1">
+                    Nueva contraseña <span class="text-gray-400 font-normal">(opcional)</span>
                 </label>
-                {{ form.password(class="w-full border border-gray-300 rounded-lg px-3 py-2") }}
+                {{ form.password(class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500") }}
                 {% for error in form.password.errors %}
                 <p class="text-xs text-red-600 mt-1">{{ error }}</p>
                 {% endfor %}
             </div>
 
             <div>
-                <label class="block text-sm font-medium">Rol</label>
-                {{ form.role_id(class="w-full border border-gray-300 rounded-lg px-3 py-2") }}
+                <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+                {{ form.role_id(class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500") }}
                 {% for error in form.role_id.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Sucursal</label>
+                {{ form.branch_id(class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500") }}
+                {% for error in form.branch_id.errors %}
                 <p class="text-xs text-red-600 mt-1">{{ error }}</p>
                 {% endfor %}
             </div>
 
             <div class="flex items-center gap-2">
                 {{ form.is_active() }}
-                <span class="text-sm">Usuario activo</span>
+                <span class="text-sm text-gray-700">Usuario activo</span>
             </div>
 
-            <button
-                class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-                Guardar cambios
-            </button>
+            <div class="flex items-center gap-3 pt-2">
+                <button type="submit"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                    Guardar cambios
+                </button>
+                <a href="{{ url_for('users.index') }}"
+                    class="text-sm text-gray-500 hover:text-gray-700">
+                    Cancelar
+                </a>
+            </div>
 
         </form>
 

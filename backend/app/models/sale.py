@@ -45,5 +45,12 @@ class Sale(TenantMixin, TimestampMixin, db.Model):
         default="completed"
     )
 
+    # Relationships
+    branch = db.relationship("Branch", foreign_keys=[branch_id], lazy="joined",
+                             back_populates="sales")
+    seller = db.relationship("User",   foreign_keys=[user_id],   lazy="joined")
+    items  = db.relationship("SaleItem", back_populates="sale",  lazy="select",
+                             cascade="all, delete-orphan")
+
     def __repr__(self):
         return f"<Sale {self.id}>"

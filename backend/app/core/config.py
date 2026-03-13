@@ -9,6 +9,9 @@ class BaseConfig:
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
+    # Fallback a SQLite local si no hay DATABASE_URL en .env
+    # Permite levantar el proyecto sin configurar PostgreSQL en desarrollo
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "sqlite:///ferreteros_dev.db")
 
 
 class ProductionConfig(BaseConfig):

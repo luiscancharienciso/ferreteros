@@ -21,8 +21,8 @@ class TimestampMixin:
 
 class TenantMixin:
     """
-    Agrega aislamiento multi-tenat.
-    Cada registro pertenece a una ferretería (tenant)
+    Agrega aislamiento multi-tenant.
+    Cada registro pertenece a una ferretería (tenant).
     """
 
     tenant_id = db.Column(

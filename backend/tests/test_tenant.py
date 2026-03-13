@@ -203,14 +203,14 @@ class TestUserService:
             assert user.email == "cajero@test.com"
             assert user.tenant_id == setup["tenant_id"]
 
-    def test_create_user_email_duplicado_en_tenant(self, app, setup):
+    def test_create_user_email_duplicado_globalmente(self, app, setup):
         with app.app_context():
-            with pytest.raises(ValueError, match="ya está en uso"):
+            with pytest.raises(ValueError, match="ya está registrado en la plataforma"):
                 user_service.create_user(
                     tenant_id=setup["tenant_id"],
                     branch_id=setup["branch_id"],
                     name="Otro Admin",
-                    email="admin@test.com",  # ya existe
+                    email="admin@test.com",  # email ya registrado globalmente
                     password="password123",
                     role_id=setup["admin_role_id"],
                 )
@@ -243,6 +243,7 @@ class TestUserService:
                 name="Nombre Actualizado",
                 email="admin@test.com",
                 role_id=setup["admin_role_id"],
+                branch_id=setup["branch_id"],
                 is_active=True,
             )
             assert updated.name == "Nombre Actualizado"

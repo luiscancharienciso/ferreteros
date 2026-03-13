@@ -5,9 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title %}Ferreteros.pe{% endblock %}</title>
+    <!-- page_title se define en cada template hijo.
+         Si no se define, el fallback es "Ferreteros.pe" -->
+    <title>{% block page_title %}Ferreteros.pe{% endblock %} | Ferreteros.pe</title>
 
-    <!-- Tailwind CDN (solo desarrollo) -->
+    <!-- Tailwind CDN (solo desarrollo).
+         En Fase 2 al activar el build con PostCSS, reemplazar por:
+         <link rel="stylesheet" href="{{ url_for('static', filename='styles/tailwind.css') }}"> -->
     <script src="https://cdn.tailwindcss.com"></script>
 
 </head>

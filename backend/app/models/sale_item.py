@@ -5,6 +5,7 @@ from app.models.mixins import TimestampMixin
 class SaleItem(TimestampMixin, db.Model):
     """
     Representa un producto dentro de una venta.
+    No lleva TenantMixin — el aislamiento es transitivo via sale.tenant_id.
     """
 
     __tablename__ = "sale_items"
@@ -37,6 +38,11 @@ class SaleItem(TimestampMixin, db.Model):
         db.Numeric(10, 2),
         default=0
     )
+
+    # Relationships
+    sale    = db.relationship("Sale",    foreign_keys=[sale_id],    lazy="joined",
+                              back_populates="items")
+    product = db.relationship("Product", foreign_keys=[product_id], lazy="joined")
 
     def __repr__(self):
         return f"<SaleItem sale={self.sale_id} product={self.product_id}>"

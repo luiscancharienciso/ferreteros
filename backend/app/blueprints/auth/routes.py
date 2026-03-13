@@ -13,6 +13,12 @@ def login():
     """
     Maneja el inicio de sesión de usuarios.
     Redirige al dashboard si ya está autenticado.
+
+    Flujo de validación:
+    1. Email existe en la plataforma (búsqueda global — email es único globalmente).
+    2. Contraseña correcta.
+    3. Usuario activo (is_active=True).
+    4. Tenant activo (is_active=True) — impide login si la ferretería fue desactivada.
     """
     if current_user.is_authenticated:
         return redirect(url_for("dashboard.index"))
@@ -20,11 +26,19 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data.strip().lower()).first()
+        email = form.email.data.strip().lower()
+        user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password_hash, form.password.data):
+
             if not user.is_active:
                 flash("Tu cuenta está desactivada. Contactá al administrador.", "danger")
+                return redirect(url_for("auth.login"))
+
+            # Verificar que la ferretería esté activa
+            tenant = tenant_service.get_tenant_by_id(user.tenant_id)
+            if not tenant or not tenant.is_active:
+                flash("Esta ferretería está desactivada. Contactá al soporte.", "danger")
                 return redirect(url_for("auth.login"))
 
             login_user(user)

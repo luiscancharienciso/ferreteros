@@ -19,8 +19,8 @@ CONFIG_MAP = {
 def create_app():
     env = os.getenv("FLASK_ENV", "development").lower()
     config_class = CONFIG_MAP.get(env, DevelopmentConfig)
-    
-    # 👇 Log de entorno activo
+
+    # Log de entorno activo
     print(f"⚙️  Flask environment: {env}")
 
     logger = configure_logging()
@@ -30,24 +30,24 @@ def create_app():
 
     if env == "production":
         _validate_production_env()
-     
+
     app = Flask(
-    __name__,
-    template_folder="../../frontend/src/templates",
-)
+        __name__,
+        template_folder="../../frontend/src/templates",
+        # static_folder apunta a frontend/src mientras no haya build de Tailwind.
+        # En Fase 2 (cuando se active el build con PostCSS), cambiar a:
+        #   static_folder="../../frontend/dist"
+        static_folder="../../frontend/src",
+        static_url_path="/static",
+    )
     app.config.from_object(config_class)
-    
+
     logger.info(f"Inicializando extensiones")
 
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
-
-    from app.models.user import User
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return db.session.get(User, int(user_id))
+    # load_user está definido en extensions.py — no se duplica aquí
 
     register_middlewares(app)
 

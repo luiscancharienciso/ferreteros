@@ -16,10 +16,12 @@ from .forms import UserForm
 from . import users_bp
 
 
-def _load_role_choices(form):
-    """Puebla el SelectField de roles con los del tenant actual."""
-    roles = user_service.get_roles_for_tenant(current_user.tenant_id)
-    form.role_id.choices = [(role.id, role.name) for role in roles]
+def _load_form_choices(form):
+    """Puebla los SelectFields de roles y sucursales con los del tenant actual."""
+    roles    = user_service.get_roles_for_tenant(current_user.tenant_id)
+    branches = user_service.get_branches_for_tenant(current_user.tenant_id)
+    form.role_id.choices   = [(r.id, r.name)   for r in roles]
+    form.branch_id.choices = [(b.id, b.name)   for b in branches]
 
 
 # ---------------------------------------------------------------------------
@@ -30,7 +32,7 @@ def _load_role_choices(form):
 @login_required
 def index():
     """Lista todos los usuarios del tenant actual."""
-    users = user_service.get_users(current_user.tenant_id)
+    users     = user_service.get_users(current_user.tenant_id)
     csrf_form = FlaskForm()
     return render_template("users/index.html", users=users, csrf_form=csrf_form)
 
@@ -46,13 +48,13 @@ def index():
 def create():
     """Crea un nuevo usuario en el tenant actual."""
     form = UserForm()
-    _load_role_choices(form)
+    _load_form_choices(form)
 
     if form.validate_on_submit():
         try:
             user_service.create_user(
                 tenant_id=current_user.tenant_id,
-                branch_id=current_user.branch_id,
+                branch_id=form.branch_id.data,
                 name=form.name.data,
                 email=form.email.data,
                 password=form.password.data,
@@ -83,10 +85,13 @@ def edit(user_id):
         flash("Usuario no encontrado.", "danger")
         return redirect(url_for("users.index"))
 
-    # GET: pre-poblar con datos del usuario. POST: WTForms lee request.form automáticamente.
-    form = UserForm(obj=user) if request.method == "GET" else UserForm()
-
-    _load_role_choices(form)
+    # Se usa el mismo objeto form en GET y POST.
+    # - En GET: obj=user pre-pobla los campos con los datos actuales.
+    # - En POST: request.form sobrescribe los datos del obj automáticamente.
+    # Esto asegura que en POST con errores de validación el form
+    # muestre los valores enviados por el usuario, no los originales.
+    form = UserForm(request.form if request.method == "POST" else None, obj=user)
+    _load_form_choices(form)
 
     if form.validate_on_submit():
         try:
@@ -96,6 +101,7 @@ def edit(user_id):
                 name=form.name.data,
                 email=form.email.data,
                 role_id=form.role_id.data,
+                branch_id=form.branch_id.data,
                 is_active=form.is_active.data,
                 password=form.password.data or None,
             )

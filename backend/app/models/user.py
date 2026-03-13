@@ -1,5 +1,4 @@
 from flask_login import UserMixin
-from sqlalchemy import UniqueConstraint
 
 from app.core.extensions import db
 from app.models.mixins import TimestampMixin, TenantMixin
@@ -9,15 +8,25 @@ class User(UserMixin, TenantMixin, TimestampMixin, db.Model):
     """
     Representa un usuario del sistema.
     Ejemplo: administrador, cajero, supervisor.
+
+    Política de email: único globalmente en la plataforma.
+    Un mismo email no puede pertenecer a dos ferreterías distintas.
+    Esto simplifica el login (no necesita selector de tenant) y se alinea
+    con el modelo SaaS donde cada persona tiene una sola cuenta.
+    En Fase 5, cuando se implementen subdominios, se podrá migrar
+    a unicidad por tenant si el negocio lo requiere.
     """
 
     __tablename__ = "users"
 
-    __table_args__ = (
-        UniqueConstraint('tenant_id', 'email', name='uq_user_tenant_email'),
-    )
-
     id = db.Column(db.Integer, primary_key=True)
+
+    tenant_id = db.Column(
+        db.Integer,
+        db.ForeignKey("tenants.id"),
+        nullable=False,
+        index=True
+    )
 
     branch_id = db.Column(
         db.Integer,
@@ -39,6 +48,7 @@ class User(UserMixin, TenantMixin, TimestampMixin, db.Model):
     email = db.Column(
         db.String(255),
         nullable=False,
+        unique=True,   # único globalmente en la plataforma
         index=True
     )
 
@@ -52,8 +62,19 @@ class User(UserMixin, TenantMixin, TimestampMixin, db.Model):
         default=True
     )
 
-    # Relación al rol — permite acceder a current_user.role.permissions
-    role = db.relationship("Role", foreign_keys=[role_id], lazy="joined")
+    is_superadmin = db.Column(
+        db.Boolean,
+        default=False,
+        server_default="false",
+        nullable=False,
+        index=True
+    )
+
+    # Relationships
+    role   = db.relationship("Role",   foreign_keys=[role_id],   lazy="joined")
+    branch = db.relationship("Branch", foreign_keys=[branch_id], lazy="joined",
+                             back_populates="users")
+    sales  = db.relationship("Sale",   back_populates="seller",  lazy="select")
 
     def __repr__(self):
         return f"<User {self.email}>"

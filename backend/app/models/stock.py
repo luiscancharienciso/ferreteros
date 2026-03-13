@@ -50,5 +50,10 @@ class Stock(TenantMixin, TimestampMixin, db.Model):
         nullable=True
     )
 
+    # Relationships
+    product = db.relationship("Product", foreign_keys=[product_id], lazy="joined")
+    branch  = db.relationship("Branch",  foreign_keys=[branch_id],  lazy="joined",
+                              back_populates="stocks")
+
     def __repr__(self):
         return f"<Stock product={self.product_id} qty={self.quantity}>"

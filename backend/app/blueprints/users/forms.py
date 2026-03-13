@@ -6,6 +6,8 @@ from wtforms.validators import DataRequired, Email, Length, Optional
 class UserForm(FlaskForm):
     """
     Formulario para crear y editar usuarios.
+    Los choices de role_id y branch_id se pueblan dinámicamente en la ruta
+    usando get_roles_for_tenant() y get_branches_for_tenant().
     """
 
     name = StringField(
@@ -25,6 +27,12 @@ class UserForm(FlaskForm):
 
     role_id = SelectField(
         "Rol",
+        coerce=int,
+        validators=[DataRequired()]
+    )
+
+    branch_id = SelectField(
+        "Sucursal",
         coerce=int,
         validators=[DataRequired()]
     )
